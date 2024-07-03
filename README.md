@@ -1,7 +1,6 @@
+# Audio Denoizing
 
-# Authors : 
-- SENNEVILLE Adhemar (MVA)
-- HABBOU Adib (MVA)
+[**Code**](./code/Supervised_Audio_Separation.ipynb)
 
 # Work overview
 As part of the class of T. COURTAT on [Deep learning and signal processing](https://www.master-mva.com/cours/apprentissage-profond-et-traitement-du-signal-introduction-et-applications-industrielles/), we had a project on audio separation. More precisely the objectif was to explore suprvised audio separation technics to get the best results on a single source, sigle speaker audio dataset.
@@ -60,6 +59,10 @@ Demucs is based on a U-Net convolutional architecture inspired by Wave-U-Net wit
 | HybridDemucs Model | 2.67 e-06  |   5.06163 | 1.97447 | 0.787565 | 2.5 M                  | 21 ms            |
 
 You can listen to output audios at the end of the notbook
+
+# Authors : 
+- de SENNEVILLE Adhemar (MVA)
+- HABBOU Adib (MVA)
 
 # Credit
 
