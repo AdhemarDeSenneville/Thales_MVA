@@ -16,12 +16,18 @@ We decided to focus more on the model used for denoizing. In the first part, we 
 Below is a list of all the models tested in the notebook:
 
 
-### 1. **Biquad Filter** (Classical)
-A Biquad filter is a type of digital filter that provides a simple, efficient way to implement standard filtering operations.
+### 1. **Butterworth Filter** (Classical)
+A Butterworth filter is a type of digital filter that are favored for noise retrieval due to their flat passband response, which ensures that all frequencies within the passband are equally treateds. If the noize is concider high frequency and the voice low frequency we can apply a filter to reduce the noize. This is obviously a very bad denoizing strategy that stands as a base line.
 
 
 ### 2. **Wiener Filter** (Classical)
-The Wiener filter is a classical signal processing technique used for noise reduction and signal restoration. It operates based on the statistical characteristics of the signal and the noise, attempting to minimize the mean square error between the estimated and the true signal. In audio processing, it's typically used to remove static background noise by smoothing out changes that don't correspond to the underlying desired signals. It requires assumptions about the spectral properties of the signal and noise to function effectively.
+The Wiener filter is a classical signal processing 
+
+The objective of the Wiener filter is to find an estimate $\hat{x}(t)$ of $x(t)$ that minimizes the mean square error $E[(x(t) - \hat{x}(t))^2]$. This leads to the filter $H(f)$, where $H(f)$ is given by:
+$H(f) = \frac{S_{xx}(f)}{S_{xx}(f) + S_{nn}(f)}$
+Here, $S_{xx}(f)$ and $S_{nn}(f)$ are the power spectral densities of the signal and noise, respectively.
+
+To train a Wiener filter, one needs to estimate the expected power spectral densities of both the signal and the noise.
 
 
 ### 3. **WaveUNet** (Deep Learning)
@@ -52,6 +58,8 @@ Demucs is based on a U-Net convolutional architecture inspired by Wave-U-Net wit
 | WaveUNet Model     | 7.89 e-06  |   6.72842 | 2.93885 | 0.6882   | 10.1 M                 | 74 ms            |
 | ConvTasnet Model   | 4.88 e-06  |   5.8216  | 2.31814 | 0.701365 | 2.5 M                  | 36 ms            |
 | HybridDemucs Model | 2.67 e-06  |   5.06163 | 1.97447 | 0.787565 | 2.5 M                  | 21 ms            |
+
+You can listen to output audios at the end of the notbook
 
 # Credit
 
