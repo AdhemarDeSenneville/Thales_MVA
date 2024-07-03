@@ -1,86 +1,64 @@
-Hi Stefan
-
-
-
-
 
 # Authors : 
 - SENNEVILLE Adhemar (MVA)
+- HABBOU Adib (MVA)
 
 # Work overview
-As part of the class of G. RICHARD and R. BADEAU, I studied the paper **[Style Transfer of Audio Effects with
-Differentiable Signal Processing](https://arxiv.org/abs/2207.08759)** from Adobe Research and Queen Mary University.
+As part of the class of T. COURTAT on [Deep learning and signal processing](https://www.master-mva.com/cours/apprentissage-profond-et-traitement-du-signal-introduction-et-applications-industrielles/), we had a project on audio separation. More precisely the objectif was to explore suprvised audio separation technics to get the best results on a single source, sigle speaker audio dataset.
 
-The main contibrution of that repository is the adaptation of the WaveShaper Pluging from FL-Studio in a Pytorch differenciable version with high expressivity.
+We decided to focus more on the model used for denoizing. In the first part, we studied classical methods to undestand on witch bloc are build the more advanced deep learning technicn studied in the second part.
 
-## Wave Shaper
-The WaveShaper is a plugin that apply a function $f: [0,1] \rightarrow [0,1]$ to all sample of an audio signal. This function is usuly shaped by the utilisator using besier curves or all sortes of interpolations.
-![avering](https://github.com/AdhemarDeSenneville/DDSP_WaveShaper/blob/main/fig/waveshaper.jpg?raw=true)
+## Deliverables
+- A fully executed notebook containing all results.
+- An oral presentation, utilizing the notebook as a visual aid.
+
+# Denoising Models Overview
+Below is a list of all the models tested in the notebook:
 
 
-I also included all the images used for the generation of the WaveShaper dataset.
+### 1. **Biquad Filter** (Classical)
+A Biquad filter is a type of digital filter that provides a simple, efficient way to implement standard filtering operations.
 
-![avering](https://raw.githubusercontent.com/AdhemarDeSenneville/DDSP_WaveShaper/main/fig/WaveShaper_dataset.png)
 
-To my knoledge, the WaveShaper, wile beeing simple, has never been model as a DDSP, this is du to it expresivity that is in theory infinit (one parameter for each value between 0 and 1). 
-This are 4 examples of possible utilisation of the WaveShapes in a production Pipeline
+### 2. **Wiener Filter** (Classical)
+The Wiener filter is a classical signal processing technique used for noise reduction and signal restoration. It operates based on the statistical characteristics of the signal and the noise, attempting to minimize the mean square error between the estimated and the true signal. In audio processing, it's typically used to remove static background noise by smoothing out changes that don't correspond to the underlying desired signals. It requires assumptions about the spectral properties of the signal and noise to function effectively.
 
-- **Gain**: $f(x) = ax$
-- **Bit Cruncher**: $f(x) = \left\lfloor \frac{|ax|}{a} \right\rfloor$
-- **Saturation**: $f(x) = \max(x, a)$
-- **Overdrive**: $f(x) = \tanh(x)$
 
-This plugin could be very useful in the style tranfere a certain gendra relying extensivly on saturation and distortion of sounds.
+### 3. **WaveUNet** (Deep Learning)
+WaveUNet is a convolutional neural network model that adapts the U-Net architecture. It processes audio signals in the time domain, allowing it to directly model and modify the waveform. This model is known for its ability to capture both local and contextual information in a signal.
 
-I tried implementing the waveshaper as a MLP, whever seeing the poor results I opted for 
-Using parametric interpolation on 2D points, it was possible to create a Differentiable WaveShaper with high expressivity 
+![](https://raw.githubusercontent.com/AdhemarDeSenneville/Thales_MVA/main/fig/waveUnet.wav)
+![](https://raw.githubusercontent.com/AdhemarDeSenneville/Thales_MVA/main/fig/WaveUNet.png)
 
-- $MLP$ - $f$ is modeled as a Multi Layer Perceptron
-- $LIX_n$ - 
-- $DIX_n$ - 
-- $DIYX_n$ - 
+### 4. **Conv-TasNet** (Deep Learning)
+Conv-TasNet uses a linear encoder to generate a representation of the speech waveform optimized for separating individual speakers. Speaker separation is achieved by applying a set of weighting functions (masks) to the encoder output. The modified encoder representations are then inverted back to the waveforms using a linear decoder. The masks are found using a temporal convolutional network (TCN) consisting of stacked 1-D dilated convolutional blocks, which allows the network to model the long-term dependencies of the speech signal while maintaining a small model size.
 
-![avering](https://raw.githubusercontent.com/AdhemarDeSenneville/DDSP_WaveShaper/main/fig/results_3.png)
+![](https://raw.githubusercontent.com/AdhemarDeSenneville/Thales_MVA/main/fig/ConvTasNet.wav)
+![](https://raw.githubusercontent.com/AdhemarDeSenneville/Thales_MVA/main/fig/ConvTasNet.png)
 
-![avering](https://raw.githubusercontent.com/AdhemarDeSenneville/DDSP_WaveShaper/main/fig/results_1.png)
+### 5. **HybridDemucs** (Deep Learning)
+Demucs is based on a U-Net convolutional architecture inspired by Wave-U-Net with GLUs, a BiLSTM between the encoder and decoder. HybridDemucs perform hybrid source separation, and decide which domain is best suited for each source (or combining both). The proposed hybrid version of the Demucs architecture won the Music Demixing Challenge 2021 organized by Sony.
 
-![avering](https://raw.githubusercontent.com/AdhemarDeSenneville/DDSP_WaveShaper/main/fig/results_2.png)
+![](https://raw.githubusercontent.com/AdhemarDeSenneville/Thales_MVA/main/fig/HybridDemucs.wav)
+![](https://raw.githubusercontent.com/AdhemarDeSenneville/Thales_MVA/main/fig/HDemucs.png)
 
-# Simple utilisation 
+# Results
 
-The code is made using **Pytorch**. Here is the example of a differentiable processing pipeline using (in serie) a Parametric Equilizer From the Transfere style paper and The WaveShaper.
-
-```python
-import torch
-from tslearn.datasets import UCR_UEA_datasets
-from DTWLoss_CUDA import DTWLoss
-
-# load data
-ucr = UCR_UEA_datasets()
-X_train, y_train, X_test, y_test = ucr.load_dataset("SonyAIBORobotSurface2")
-from DTWLoss_CUDA import DTWLoss
-
-# convert to torch
-X_train = torch.from_numpy(X_train).float().requires_grad_(True)
-loss = DTWLoss(gamma=0.1)
-optimizer = # your optimizer
-
-##############
-# your code ##
-##############
-
-value = loss(X_train[0].unsqueeze(0), X_train[1].unsqueeze(0))
-optimizer.zero_grad()
-value.backward()
-optimizer.step()
-```
-
-# Experiments
-
-## Training on using Waveshaper
-![avering](https://github.com/b-ptiste/dtw-soft/assets/75781257/b1373a3a-f1b7-4ea3-8701-912d511f7c72)
-
+|                    | MSE Loss   |       SDR |    PESQ |     STOI | Number of Parameters   | Inference Time   |
+|--------------------|------------|-----------|---------|----------|------------------------|------------------|
+| Wiener Filter      | 2.18 e-04  | -10.6569  | 2.08805 | 0.80397  | 1                      | 4 ms             |
+| Butterworth Filter | 2.23 e-04  |  -3.7573  | 1.57805 | 0.895725 | 4                      | 7 ms             |
+| Dumb Model         | 7.76 e-03  | -55.7942  | 1.20344 | 0.001805 | 400 K                  | 3 ms             |
+| WaveUNet Model     | 7.89 e-06  |   6.72842 | 2.93885 | 0.6882   | 10.1 M                 | 74 ms            |
+| ConvTasnet Model   | 4.88 e-06  |   5.8216  | 2.31814 | 0.701365 | 2.5 M                  | 36 ms            |
+| HybridDemucs Model | 2.67 e-06  |   5.06163 | 1.97447 | 0.787565 | 2.5 M                  | 21 ms            |
 
 # Credit
 
-[Style Transfer of Audio Effects with Differentiable Signal Processing by Christian J. Steinmetz and Nicholas J. Bryan and Joshua D. Reiss, 2022](https://arxiv.org/abs/2207.08759)
+**Wave-U-Net**: [Wave-U-Net: A Multi-Scale Neural Network For
+End-To-End Audio Source Separation](https://arxiv.org/pdf/1806.03185)
+
+**Conv-TasNet**: [Conv-TasNet: Surpassing Ideal Time-Frequency
+Magnitude Masking for Speech Separation](https://arxiv.org/pdf/1809.07454)
+
+**HybridDemucs**: [Hybrid Spectrogram and Waveform Source Separation](https://arxiv.org/pdf/2111.03600)
