@@ -54,11 +54,11 @@ HybridDemucs combines the U-Net architecture inspired by Wave-U-Net with GLUs an
 
 You can listen to the output audios at the end of the notebook.
 
-## Authors
-- Adhémar de Senneville (MVA)
-- Adib Habbou (MVA)
+# Authors
+- Adhémar de Senneville (MVA) (18/20)
+- Adib Habbou (MVA) (18/20)
 
-## Credits
+# Credits
 
 **Wave-U-Net**: [Wave-U-Net: A Multi-Scale Neural Network for End-To-End Audio Source Separation](https://arxiv.org/pdf/1806.03185)
 
