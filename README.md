@@ -1,9 +1,9 @@
-# Voice Denoising
+# Speech Denoising
 
 [**Code**](./code/Supervised_Audio_Separation.ipynb)
 
 # Work Overview
-As part of the course by T. COURTAT on [Deep Learning and Signal Processing](https://www.master-mva.com/cours/apprentissage-profond-et-traitement-du-signal-introduction-et-applications-industrielles/), we undertook a project focused on audio separation. More precisely, the objective was to explore voice denoising techniques to achieve the best results on a single source, single speaker audio dataset.
+As part of the course by T. COURTAT on [Deep Learning and Signal Processing](https://www.master-mva.com/cours/apprentissage-profond-et-traitement-du-signal-introduction-et-applications-industrielles/), we undertook a project focused on audio separation. More precisely, the objective was to explore speech denoising techniques to achieve the best results on a single source, single speaker audio dataset.
 
 We decided to concentrate more on the model used for denoising. In the first part, we studied classical methods to understand which blocks are built upon the more advanced deep learning techniques studied in the second part.
 
